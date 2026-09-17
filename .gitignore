@@ -1,0 +1,28 @@
+# Local environments and Python artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Jupyter and editor artifacts
+.ipynb_checkpoints/
+.idea/
+.vscode/
+
+# Generated or temporary files
+tmp/
+*.log
+
+# Local planning artifacts
+PLAN_OF_ACTION.md
+planning/
+*.plan.md
+23CSE301_ML_26_27_Capstone_Guidelines.pdf
+
+# Raw datasets
+data/raw/*
+!data/raw/.gitkeep
+
+# Generated model binaries
+models/*
+!models/.gitkeep
