@@ -35,9 +35,9 @@ Both datasets are distributed under the Creative Commons Attribution 4.0 license
 - Phase 0: problem framing, source audit, target selection, leakage review, and evaluation protocols completed.
 - Phase 1: repository structure, verified dataset acquisition, provenance documentation, and reproducible environment completed.
 - Phase 2: dataset audit, EDA, cleaning decisions, deterministic feature engineering, fixed splits, and leakage-safe preprocessing implemented in both notebooks.
-- Phase 3: training, tuning, and final comparison of the required Review 1 algorithms is the next implementation phase.
+- Phase 3: all ten regression algorithms and all five Classification Part-A algorithms implemented, tuned, evaluated, and documented.
 
-Both Phase 2 notebooks have been executed from top to bottom with visible outputs and no saved execution errors. Team verification of every interpretation and instructor confirmation of the selected datasets and split protocols remain required before evaluation.
+Both Review 1 notebooks have been executed from top to bottom with visible outputs and no saved execution errors. Team verification of every interpretation and instructor confirmation of the selected datasets and split protocols remain required before evaluation.
 
 ## Repository structure
 
@@ -103,6 +103,52 @@ python -m jupyter nbconvert --to notebook --execute --inplace \
 - Classification reports Accuracy, Precision, Recall, weighted F1, confusion matrices, and multiclass One-vs-Rest ROC-AUC.
 - Macro F1 and per-class recall supplement the mandatory metrics for the imbalanced classification target.
 - The held-out test set is not used for feature selection or hyperparameter tuning.
+
+## Review 1 results
+
+### Regression comparison
+
+All models use 2011-2014 for training and time-aware validation and the same untouched 2015 test year.
+
+| Model | Test R2 | RMSE (MWh) | MAE (MWh) | Mean CV R2 |
+|---|---:|---:|---:|---:|
+| Random Forest Regressor | 0.9951 | 1.1318 | 0.8536 | 0.9858 |
+| Gradient Boosting Regressor | 0.9933 | 1.3273 | 1.0387 | 0.9860 |
+| Decision Tree Regressor | 0.9906 | 1.5690 | 1.2080 | 0.9824 |
+| Lasso Regression | 0.9866 | 1.8748 | 1.3323 | 0.9911 |
+| Polynomial Regression | 0.9857 | 1.9374 | 1.3694 | 0.9870 |
+| Linear Regression | 0.9857 | 1.9374 | 1.3694 | 0.9870 |
+| Ridge Regression | 0.9799 | 2.2936 | 1.6377 | 0.9925 |
+| Support Vector Regressor | 0.9768 | 2.4657 | 1.6511 | 0.9880 |
+| ElasticNet Regression | 0.9686 | 2.8688 | 2.0224 | 0.9933 |
+| K-Nearest Neighbors Regressor | 0.9603 | 3.2225 | 2.2300 | 0.9864 |
+
+ElasticNet was preselected by the highest mean temporal-CV R2. Random Forest subsequently produced the strongest descriptive 2015 result. The disagreement is reported rather than using 2015 to retroactively change hyperparameters; it indicates that model rankings vary across operating years. The notebook includes diagnostics for both models.
+
+### Classification Part A comparison
+
+All models use the same stratified 80:20 split. Hyperparameters were selected by five-fold training macro F1.
+
+| Model | Accuracy | Weighted F1 | Macro F1 | Weighted OvR ROC-AUC | Mean CV Macro F1 |
+|---|---:|---:|---:|---:|---:|
+| Logistic Regression | 0.7356 | 0.7485 | 0.6983 | 0.9010 | 0.7144 |
+| Support Vector Classifier | 0.7243 | 0.7353 | 0.6839 | 0.8902 | 0.7157 |
+| Decision Tree Classifier | 0.7243 | 0.7169 | 0.6488 | 0.8655 | 0.6679 |
+| K-Nearest Neighbors | 0.7153 | 0.6989 | 0.6278 | 0.8392 | 0.6267 |
+| Gaussian Naive Bayes | 0.2531 | 0.1792 | 0.2296 | 0.7218 | 0.2296 |
+
+SVC was preselected by training macro F1 and achieved `Enrolled` recall of 0.6038. Logistic Regression produced the highest descriptive held-out weighted F1. Gaussian Naive Bayes reached very high `Enrolled` recall by severely over-predicting that class, producing only 0.1992 precision and 0.2531 overall accuracy; this is not a useful trade-off.
+
+Detailed best parameters, per-class classification metrics, top-two fold results, tuning comparisons, and subgroup checks are exported under `results/` from the same notebook executions.
+
+## Review 1 conclusions and limitations
+
+- The turbine measurements support highly accurate contemporaneous energy-yield estimation, but the work must not be presented as long-range forecasting.
+- Temporal-CV and 2015 model rankings differ, showing why an honest future-year holdout matters.
+- Student outcome accuracy alone is insufficient because `Enrolled` remains the hardest class.
+- Student predictions are associations from one Portuguese institution and are suitable only for human-reviewed support analysis.
+- Coefficients, tree importance, subgroup error differences, and correlations do not establish causation.
+- Instructor approval and independent team verification remain required before presentation.
 
 ## Responsible-use statement
 
