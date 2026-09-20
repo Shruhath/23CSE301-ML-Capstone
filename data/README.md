@@ -84,7 +84,7 @@ The Phase 2 notebook creates three deterministic candidate features:
 | `exhaust_to_discharge_pressure` | `GTEP / CDP` | Normalises exhaust pressure by compressor discharge pressure |
 | `ambient_heat_load` | `AT * AH` | Represents a temperature-humidity interaction |
 
-These features use only approved same-row measurements. Phase 3 must retain them only if training-only cross-validation supports their usefulness.
+These features use only approved same-row measurements. Phase 3 compared the eight raw predictors against the raw predictors plus all three engineered features using five-fold temporal CV with Linear Regression. The combined engineered set was retained because its mean CV R2 was 0.987017 versus 0.986681 for the raw set. The gain is small, so the notebook treats these as supporting features rather than the source of model performance.
 
 ## Classification dataset
 
@@ -145,7 +145,7 @@ The Phase 2 notebook creates four deterministic academic-progress features:
 | `approval_ratio_change` | Second-semester ratio minus first-semester ratio | Captures improvement or decline |
 | `semester_grade_change` | Second-semester grade minus first-semester grade | Captures grade direction |
 
-Zero enrolled units produce an approval ratio of zero. All engineered features use only information available at the declared end-of-second-semester prediction point. Phase 3 must evaluate them through training-only validation.
+Zero enrolled units produce an approval ratio of zero. All engineered features use only information available at the declared end-of-second-semester prediction point. Training-only Logistic Regression CV retained only `approval_ratio_change`: mean macro F1 was 0.703238 versus 0.702053 for the raw feature set. The other engineered variables remain documented but are not passed to the Phase 3 classifiers because they did not improve the training-only check.
 
 ## Attribution
 
