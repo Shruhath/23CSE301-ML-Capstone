@@ -67,6 +67,25 @@ The source year is derived from the filename and is used only for splitting.
 
 This produces an approximately 80:20 chronological split and tests future-year generalization. All ten regression algorithms must use the same 2015 test observations.
 
+### Regression cleaning and feature contract
+
+- Missing values: none in the verified source files.
+- Duplicates: seven extra, fully identical sensor records occur in two consecutive groups in 2014. Keep the first row in each group and remove the seven extras while preserving source order.
+- Outliers: retain valid observations even when a univariate 1.5-IQR rule flags them. The bounded and concentrated operating regimes make automatic IQR deletion inappropriate.
+- Rows after duplicate removal: 36,726.
+- Training rows after duplicate removal: 29,342.
+- Final test rows: 7,384.
+
+The Phase 2 notebook creates three deterministic candidate features:
+
+| Engineered feature | Definition | Rationale |
+|---|---|---|
+| `temperature_drop` | `TIT - TAT` | Represents the thermal change across the turbine |
+| `exhaust_to_discharge_pressure` | `GTEP / CDP` | Normalises exhaust pressure by compressor discharge pressure |
+| `ambient_heat_load` | `AT * AH` | Represents a temperature-humidity interaction |
+
+These features use only approved same-row measurements. Phase 3 must retain them only if training-only cross-validation supports their usefulness.
+
 ## Classification dataset
 
 ### Source and license
@@ -107,6 +126,26 @@ The prediction time is after completion of the second semester. This is essentia
 - Cross-validation: five-fold `StratifiedKFold` with shuffling and `random_state=42`
 
 Every Part-A classification algorithm must use the same held-out test observations.
+
+### Classification cleaning and feature contract
+
+- Missing values: none in the verified source file.
+- Exact duplicates: none.
+- Outliers: retain legitimate rare ages, grades, and study histories; do not remove records solely because they cross a univariate IQR fence.
+- Categorical integer codes: one-hot encode rather than treating their numeric codes as continuous quantities.
+- Numeric features: median-impute and standardise inside the model pipeline.
+- Categorical features: most-frequent impute and one-hot encode inside the model pipeline, with unknown categories ignored safely.
+
+The Phase 2 notebook creates four deterministic academic-progress features:
+
+| Engineered feature | Definition | Rationale |
+|---|---|---|
+| `approval_ratio_1st` | First-semester approved units divided by enrolled units | Normalises achievement for course load |
+| `approval_ratio_2nd` | Second-semester approved units divided by enrolled units | Normalises achievement for course load |
+| `approval_ratio_change` | Second-semester ratio minus first-semester ratio | Captures improvement or decline |
+| `semester_grade_change` | Second-semester grade minus first-semester grade | Captures grade direction |
+
+Zero enrolled units produce an approval ratio of zero. All engineered features use only information available at the declared end-of-second-semester prediction point. Phase 3 must evaluate them through training-only validation.
 
 ## Attribution
 
