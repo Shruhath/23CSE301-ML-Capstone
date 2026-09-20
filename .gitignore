@@ -15,8 +15,11 @@ tmp/
 
 # Local planning artifacts
 PLAN_OF_ACTION.md
+PROJECT_CONTEXT.md
+AGENTS.md
 planning/
 *.plan.md
+response-output/
 23CSE301_ML_26_27_Capstone_Guidelines.pdf
 
 # Raw datasets
