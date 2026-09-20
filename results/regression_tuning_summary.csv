@@ -1,0 +1,5 @@
+Model,Default CV R2,Tuned CV R2,CV R2 Improvement,Best Parameters
+Ridge Regression,0.9873144138053354,0.9924841690105577,0.005169755205222337,{'model__alpha': 100.0}
+Lasso Regression,0.9807452755421904,0.9910997291130125,0.010354453570822097,{'model__alpha': 0.1}
+Random Forest Regressor,0.9857722737799011,0.9857722737799011,0.0,"{'model__max_depth': None, 'model__min_samples_leaf': 1, 'model__n_estimators': 100}"
+Gradient Boosting Regressor,0.9855706065336329,0.9860481620965829,0.0004775555629499273,"{'model__learning_rate': 0.1, 'model__max_depth': 2, 'model__n_estimators': 200}"

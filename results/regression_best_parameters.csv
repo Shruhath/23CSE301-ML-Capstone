@@ -1,0 +1,11 @@
+Model,Best Parameters,Candidates
+Linear Regression,Fixed baseline,1
+Ridge Regression,{'model__alpha': 100.0},5
+Lasso Regression,{'model__alpha': 0.1},5
+ElasticNet Regression,"{'model__alpha': 0.1, 'model__l1_ratio': 0.8}",9
+Polynomial Regression,{'polynomial__degree': 1},2
+Decision Tree Regressor,"{'model__max_depth': None, 'model__min_samples_leaf': 1}",6
+Random Forest Regressor,"{'model__max_depth': None, 'model__min_samples_leaf': 1, 'model__n_estimators': 100}",4
+Gradient Boosting Regressor,"{'model__learning_rate': 0.1, 'model__max_depth': 2, 'model__n_estimators': 200}",4
+Support Vector Regressor,"{'model__C': 0.1, 'model__epsilon': 0.1, 'model__kernel': 'linear'}",4
+K-Nearest Neighbors Regressor,"{'model__n_neighbors': 7, 'model__p': 2, 'model__weights': 'distance'}",6
