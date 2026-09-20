@@ -1,0 +1,6 @@
+Model,Best Parameters,Candidates
+Logistic Regression,"{'model__C': 0.1, 'model__class_weight': 'balanced'}",6
+K-Nearest Neighbors,"{'model__n_neighbors': 5, 'model__p': 1, 'model__weights': 'uniform'}",16
+Gaussian Naive Bayes,{'model__var_smoothing': 1e-07},3
+Decision Tree Classifier,"{'model__criterion': 'gini', 'model__max_depth': 6, 'model__min_samples_leaf': 5}",16
+Support Vector Classifier,"{'model__C': 1.0, 'model__class_weight': 'balanced', 'model__kernel': 'rbf'}",12
