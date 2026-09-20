@@ -30,6 +30,15 @@ Source: [UCI Predict Students' Dropout and Academic Success](https://archive.ics
 
 Both datasets are distributed under the Creative Commons Attribution 4.0 license.
 
+## Current Review 1 progress
+
+- Phase 0: problem framing, source audit, target selection, leakage review, and evaluation protocols completed.
+- Phase 1: repository structure, verified dataset acquisition, provenance documentation, and reproducible environment completed.
+- Phase 2: dataset audit, EDA, cleaning decisions, deterministic feature engineering, fixed splits, and leakage-safe preprocessing implemented in both notebooks.
+- Phase 3: training, tuning, and final comparison of the required Review 1 algorithms is the next implementation phase.
+
+Both Phase 2 notebooks have been executed from top to bottom with visible outputs and no saved execution errors. Team verification of every interpretation and instructor confirmation of the selected datasets and split protocols remain required before evaluation.
+
 ## Repository structure
 
 ```text
@@ -76,6 +85,15 @@ jupyter lab
 
 Run each notebook from the first cell to the last with the working directory set to the repository root. All random operations use `random_state=42` where applicable.
 
+To reproduce the saved Phase 2 outputs non-interactively:
+
+```bash
+python -m jupyter nbconvert --to notebook --execute --inplace \
+  --ExecutePreprocessor.timeout=600 notebooks/regression.ipynb
+python -m jupyter nbconvert --to notebook --execute --inplace \
+  --ExecutePreprocessor.timeout=600 notebooks/classification.ipynb
+```
+
 ## Evaluation principles
 
 - Every algorithm within a track uses the same held-out test observations.
@@ -92,4 +110,4 @@ The student-outcome model is an educational analysis and decision-support exerci
 
 ## AI-assistance disclosure
 
-Generative-AI tools were used for code scaffolding, documentation support, and reproducibility utilities. All dataset decisions, feature engineering, analysis, experimental validation, and interpretations were independently performed and verified by the team. Every team member is responsible for understanding and explaining the submitted work during the viva.
+Generative-AI tools assisted with planning, dataset-audit support, code scaffolding, documentation, reproducibility utilities, initial notebook construction, and draft observation text. The team must independently rerun the notebooks, verify every displayed result, revise interpretations in its own words, validate all modeling decisions, and be able to explain every submitted line during the viva. AI-generated scaffolding does not replace the team's required analysis or interpretation.
