@@ -4,3 +4,8 @@ K-Nearest Neighbors,"{'model__n_neighbors': 5, 'model__p': 1, 'model__weights': 
 Gaussian Naive Bayes,{'model__var_smoothing': 1e-07},3
 Decision Tree Classifier,"{'model__criterion': 'gini', 'model__max_depth': 6, 'model__min_samples_leaf': 5}",16
 Support Vector Classifier,"{'model__C': 1.0, 'model__class_weight': 'balanced', 'model__kernel': 'rbf'}",12
+Random Forest Classifier,"{'model__max_depth': None, 'model__n_estimators': 250}",4
+AdaBoost Classifier,"{'model__estimator__max_depth': 2, 'model__learning_rate': 0.1, 'model__n_estimators': 200}",8
+Gradient Boosting Classifier,"{'model__learning_rate': 0.1, 'model__max_depth': 3, 'model__n_estimators': 200}",8
+Bagging Classifier,"{'model__estimator__max_depth': None, 'model__max_samples': 1.0, 'model__n_estimators': 100}",8
+MLP Classifier,"{'model__alpha': 0.001, 'model__hidden_layer_sizes': (100,), 'model__learning_rate_init': 0.001}",4

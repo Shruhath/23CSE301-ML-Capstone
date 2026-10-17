@@ -1,0 +1,21 @@
+Feature,Importance
+Application order,0.01143792217020015
+Scholarship holder_0,0.011558349583827576
+Scholarship holder_1,0.012786515847229106
+Curricular units 1st sem (enrolled),0.016351529052104255
+Inflation rate,0.018005937859982567
+Curricular units 2nd sem (enrolled),0.01914064531587483
+Unemployment rate,0.019613594774966617
+GDP,0.019963587334316423
+Tuition fees up to date_0,0.02139819646063358
+Tuition fees up to date_1,0.02886297344387947
+Previous qualification (grade),0.029428071215605763
+Age at enrollment,0.0296837068101719
+Curricular units 1st sem (evaluations),0.03208760554994893
+Admission grade,0.03211630306670635
+Curricular units 2nd sem (evaluations),0.03528100972885015
+approval_ratio_change,0.03778361198690428
+Curricular units 1st sem (grade),0.05910487945101134
+Curricular units 1st sem (approved),0.06735627281932748
+Curricular units 2nd sem (grade),0.08081882212408503
+Curricular units 2nd sem (approved),0.09418892246698281
