@@ -1,4 +1,4 @@
-"""Download and verify the two Review 1 datasets from UCI.
+"""Download and verify the capstone datasets from UCI.
 
 This script intentionally uses only the Python standard library so data can be
 prepared before the project's third-party dependencies are installed.
@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import io
 import shutil
 import tempfile
 import urllib.request
@@ -38,6 +39,7 @@ class Dataset:
     archive_sha256: str
     output_directory: str
     files: tuple[ExpectedFile, ...]
+    nested_archive: str | None = None
 
 
 DATASETS = {
@@ -106,6 +108,24 @@ DATASETS = {
             ),
         ),
     ),
+    "clustering": Dataset(
+        key="clustering",
+        title="UCI Raisin Dataset",
+        url="https://archive.ics.uci.edu/static/public/850/raisin.zip",
+        archive_sha256=(
+            "5d516c040923fd154ecf85e31b6e1b5a096724fa0e68d588c33fb5a2f0c3e5db"
+        ),
+        output_directory="raisin",
+        files=(
+            ExpectedFile(
+                "Raisin_Dataset/Raisin_Dataset.arff",
+                "Raisin_Dataset.arff",
+                "8a33803b5961650225150740fa09fa31ee8875266277c7ac3291e2a3ee351814",
+                900,
+            ),
+        ),
+        nested_archive="Raisin_Dataset.zip",
+    ),
 }
 
 
@@ -118,6 +138,22 @@ def sha256_file(path: Path) -> str:
 
 
 def count_data_rows(path: Path, delimiter: str) -> int:
+    if path.suffix.lower() == ".arff":
+        in_data_section = False
+        row_count = 0
+        with path.open("r", encoding="utf-8", newline="") as stream:
+            for line in stream:
+                stripped = line.strip()
+                if not in_data_section:
+                    if stripped.lower() == "@data":
+                        in_data_section = True
+                    continue
+                if stripped and not stripped.startswith("%"):
+                    row_count += 1
+        if not in_data_section:
+            raise ValueError(f"ARFF data marker is missing from {path}")
+        return row_count
+
     with path.open("r", encoding="utf-8-sig", newline="") as stream:
         reader = csv.reader(stream, delimiter=delimiter)
         next(reader)
@@ -166,25 +202,39 @@ def download_archive(dataset: Dataset, destination: Path) -> None:
         )
 
 
-def extract_expected_files(dataset: Dataset, archive: Path) -> None:
+def extract_from_bundle(dataset: Dataset, bundle: zipfile.ZipFile) -> None:
     destination = RAW_DIR / dataset.output_directory
     destination.mkdir(parents=True, exist_ok=True)
 
-    with zipfile.ZipFile(archive) as bundle:
-        available = set(bundle.namelist())
-        for expected in dataset.files:
-            if expected.archive_name not in available:
-                raise ValueError(
-                    f"Expected {expected.archive_name} is absent from {dataset.title} archive"
-                )
+    available = set(bundle.namelist())
+    for expected in dataset.files:
+        if expected.archive_name not in available:
+            raise ValueError(
+                f"Expected {expected.archive_name} is absent from {dataset.title} archive"
+            )
 
-            output_path = destination / expected.output_name
-            temporary_path = output_path.with_suffix(output_path.suffix + ".tmp")
-            with bundle.open(expected.archive_name) as source:
-                with temporary_path.open("wb") as target:
-                    shutil.copyfileobj(source, target)
-            temporary_path.replace(output_path)
-            validate_file(output_path, expected)
+        output_path = destination / expected.output_name
+        temporary_path = output_path.with_suffix(output_path.suffix + ".tmp")
+        with bundle.open(expected.archive_name) as source:
+            with temporary_path.open("wb") as target:
+                shutil.copyfileobj(source, target)
+        temporary_path.replace(output_path)
+        validate_file(output_path, expected)
+
+
+def extract_expected_files(dataset: Dataset, archive: Path) -> None:
+    with zipfile.ZipFile(archive) as outer_bundle:
+        if dataset.nested_archive is None:
+            extract_from_bundle(dataset, outer_bundle)
+            return
+
+        if dataset.nested_archive not in outer_bundle.namelist():
+            raise ValueError(
+                f"Nested archive {dataset.nested_archive} is absent from {dataset.title}"
+            )
+        nested_bytes = outer_bundle.read(dataset.nested_archive)
+        with zipfile.ZipFile(io.BytesIO(nested_bytes)) as nested_bundle:
+            extract_from_bundle(dataset, nested_bundle)
 
 
 def prepare_dataset(dataset: Dataset, force: bool) -> None:

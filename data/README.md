@@ -15,6 +15,7 @@ Useful options:
 ```bash
 python data/download_datasets.py --dataset regression
 python data/download_datasets.py --dataset classification
+python data/download_datasets.py --dataset clustering
 python data/download_datasets.py --force
 ```
 
@@ -146,6 +147,41 @@ The Phase 2 notebook creates four deterministic academic-progress features:
 | `semester_grade_change` | Second-semester grade minus first-semester grade | Captures grade direction |
 
 Zero enrolled units produce an approval ratio of zero. All engineered features use only information available at the declared end-of-second-semester prediction point. Training-only Logistic Regression CV retained only `approval_ratio_change`: mean macro F1 was 0.703238 versus 0.702053 for the raw feature set. The other engineered variables remain documented but are not passed to the Phase 3 classifiers because they did not improve the training-only check.
+
+## Clustering dataset
+
+### Source and license
+
+- Name: Raisin Dataset
+- UCI page: <https://archive.ics.uci.edu/dataset/850/raisin>
+- DOI: <https://doi.org/10.24432/C5660T>
+- License: Creative Commons Attribution 4.0
+- Official download: <https://archive.ics.uci.edu/static/public/850/raisin.zip>
+- Locally verified outer-archive SHA-256: `5d516c040923fd154ecf85e31b6e1b5a096724fa0e68d588c33fb5a2f0c3e5db`
+
+The UCI outer archive contains the nested `Raisin_Dataset.zip`. The downloader validates the outer archive, extracts only `Raisin_Dataset/Raisin_Dataset.arff` from the nested archive, validates the extracted-file hash and row count, then stores it locally. The outer-archive hash above is measured from the official download on 2026-10-17; it is not presented as a publisher-issued checksum.
+
+### Local file and audited schema
+
+| File | Expected rows | SHA-256 |
+|---|---:|---|
+| `raw/raisin/Raisin_Dataset.arff` | 900 | `8a33803b5961650225150740fa09fa31ee8875266277c7ac3291e2a3ee351814` |
+
+The verified ARFF release has seven numeric image-derived morphology features: `Area`, `MajorAxisLength`, `MinorAxisLength`, `Eccentricity`, `ConvexArea`, `Extent`, and `Perimeter`. It has zero missing values and zero exact duplicate rows.
+
+`Class` is a separate source reference field with 450 `Besni` and 450 `Kecimen` rows. It is excluded from scaling, K-Means, Agglomerative Hierarchical Clustering, k selection, linkage selection, PCA, and t-SNE. It is used only after those choices are frozen, to describe post-hoc reference agreement.
+
+### Clustering protocol
+
+- Standardize all seven numeric features with `StandardScaler`.
+- Evaluate K-Means candidates from k=2 through k=8 using `random_state=42` and `n_init=20`.
+- Select k with the highest label-free silhouette score; retain inertia, Davies-Bouldin, and Calinski-Harabasz results for the complete comparison.
+- Compare Ward, complete, and average hierarchical linkage at the selected k.
+- Exclude a hierarchical candidate if its smallest cluster has fewer than 5% of the records, then choose the eligible candidate with the strongest silhouette score. This prevents a tiny outlier-like group from being presented as a meaningful two-cluster solution.
+- Compute the hierarchy from all records and truncate only the dendrogram display for readability.
+- Use PCA plots for both required algorithms and t-SNE for K-Means. These are explanatory views, not model-selection metrics.
+
+The dataset is a team-proposed Review 2 direction. The course guideline says datasets are assigned by the instructor, so instructor confirmation remains required before treating it as the official submission source.
 
 ## Attribution
 

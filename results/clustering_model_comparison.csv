@@ -1,0 +1,3 @@
+Algorithm,Configuration,Silhouette Score,Davies-Bouldin Index,Calinski-Harabasz Index
+K-Means,"k=2, n_init=20",0.4411362957481304,0.9101259488527554,766.9966967663797
+Agglomerative Hierarchical,"linkage=complete, k=2",0.4762174440021613,0.7975239617828165,546.6734472919838
